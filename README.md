@@ -37,6 +37,7 @@
         - tmp : 임시파일 저장
         - vendor : template 지정
         - Gemfile : gem관리
+            >> `gem 'gem이름', '~> version'`과 같이 입력한다.
         - Gemfile.lock : 설치된 dependencies 확인
     * rails client - server 요청 관계
         - 하단 이미지 확인
@@ -51,7 +52,24 @@
         - Test
         - Production
             >> 변경사항이 자동적으로 저장되지 않음. 로그도 일부만 찍힌다.(낮은 level). `$ rails s`로 서버를 실행하지 않는다.
+    ** gems
+        * bootstrap
+            - getbootstrap.com에서 bootstrap gem을 사용하기 위한 방법이 설명되어 있다.
+                >> `class`를 이용하여 css를 입힐 수 있음.
+            - gemfile에 `gem 'bootstrap', '~> 4.1.1'`과 같이 하고 command에 bundle install을 하면 설치된다.
+            - 이후, app/assets/stylesheets/application.scss에서 `@import "bootstrap";`으로 import할 수 있다.
+            - 만약 scss가 아니고 css면 단순히 rename할 것
+            - 이 부트스트랩을 통해 Grid system을 이용하면 반응형 웹(사이즈에 따라 자동으로 조정)을 쉽게 구현할 수 있다.
+                >> app/views/layouts/application.html.erb에 다음 코드를 추가한다.
+                >> `<meta="viewport" content="width=devide-width, initial-scale=1, shrink-to-fit=no">`
+            * Grid System
+                - 12부분으로 나누어서 화면을 조정할 수 있다.
+        * geocoder
+            - ip를 기반으로 위치를 알려주는 gem
+            - Gemfile에 gem 'geocoder'로 설치 가능
+            - request.location : 위치 정보, request.location.region : 지역 정보
 ![이미지](./readme_img/mvc.JPG)
+<a href="http://getbootstrap.com/docs/4.1/getting-started/download/">부트스트랩 정보 참조</a>
 ### 3. MVC
     * Controller
         - 역할?
@@ -96,6 +114,16 @@
             >> 이 경우 수정을 위해서 `rake db:drop`을 통해 drop하고 다시 migrate해야 한다.(이전의 데이터는 모두 날아간다.)
             >> 따라서 부득이하게 db를 수정해야 할 경우에는 add_column, add_index등의 명령을 통해서 추가해야 한다.
             >> *app/models/모델명.rb*에는 아무런 내용이 없지만 ApplicationRecord를 상속함으로써 기능을 사용할 수 있다.
+        - column
+            >> string : 256자까지 가능
+            >> text : 대략 12000자 까지 가능
+    * View
+        - 생성
+            >> touch
+        - 역할
+            >> Client에게 보여줄 Front page
+        - 규칙
+            >> 액션과 뷰 파일의 이름은 반드시 일치시켜야 한다.
 ## Controller---------------------------------------------------------------------------------------------------            
 ![이미지](./readme_img/after_command.JPG)            
 ![이미지](./readme_img/home_controller.JPG)            
@@ -119,3 +147,12 @@
             >> <input type="hidden" name="authenticity_token" value="<%= form_authenticity_token %>">
             >> 해당 token의 경우도 전달될 때마다 지속하여 변경된다.
             >> 물론 application_controller에서 protect부분을 주석처리해도 되지만 그 경우 보안이 나빠진다.
+    * 요청 정보 확인 하기
+        - controller에 `p request`와 같이 작성하면 action이 실행될 때 유저의 요청 정보를 서버로그에 나타낼 수 있다.
+            >> `request`객체를 써내려갈 수 있다. .연산자를 이용해 속성을 뽑아낼 수 있다.
+            >> 만약 IP정보를 뽑아내고 싶다면 `p request.ip`로 하면 된다.
+    * 요청 정보 삭제하기
+        - find함수를 이용해 parameter로 전달되는 value에 맞는 객체를 찾는다.
+        - destroy메소드로 삭제 가능
+    * 수정하기
+        - find로 찾은 다음 다른 내용으로 변경한 다음 save한다.
