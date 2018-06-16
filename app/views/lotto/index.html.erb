@@ -1,0 +1,9 @@
+<h2>이번주 로또 번호는 <%= @new_lotto.numbers %></h2>
+
+<a href="/lotto/new">새 번호 받기</a>
+
+<ul>
+<% @lottos.each do |lotto| %>
+    <li><%= lotto.numbers %></li>
+<% end %>
+</ul>
