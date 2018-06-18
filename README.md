@@ -16,7 +16,7 @@
         - 내 프로젝트에 사용될 모든 gem을 자동으로 설치함
         - 해당 gem은 Gemfile에 명시한다.
         - Gemfile에 사용할 gem을 명시한 이후 터미널에 다음 명령어 입력
-            >> bundle install 
+            >> `bundle install`
             >> 해당 명령어는 사용할 라이브러리를 추가한 이후에도 반드시 해당 명령어를 실행
             >> 사용할 gem을 지우더라도 해당 명령어를 다시 수행해야 한다. 그래야 삭제됨
     * rails 파일
@@ -50,7 +50,7 @@
         - Development
             >> 변경사항이 자동적으로 확인되고, 모든 로그가 찍힌다.
         - Test
-        - Production
+        - Productionr
             >> 변경사항이 자동적으로 저장되지 않음. 로그도 일부만 찍힌다.(낮은 level). `$ rails s`로 서버를 실행하지 않는다.
     ** gems
         * bootstrap
@@ -156,3 +156,35 @@
         - destroy메소드로 삭제 가능
     * 수정하기
         - find로 찾은 다음 다른 내용으로 변경한 다음 save한다.
+### 5. form helper 
+    * 개념
+        - *ruby tag*로 *html*코드를 작성할 수 있는 코드
+        - view helper의 일종
+        - 참조 : http://guides.rubyonrails.org/form_helpers.html
+    * 예시
+        >> input 태그 submit 타입
+            - `<%= submit_tag("tweet") %>`
+            - `<input type="submit" value="tweet">`
+        >> textarea 태그
+            - `<%= text_area_tag(:contents, params[:contents], placeholder: "What's happening?", size: "24x6") %>`
+            - `<textarea placeholder="What's happening?"></textarea>`
+### 6. cookie / session
+    * cookie
+        - 서버와 클라이언트가 요청하는 정보는 독립적으로 작용한다.
+        - 이 독립적인 부분을 보완하기 위한 것이 cookie(특정 정보는 저장하여 유지할 필요가 있다.)
+        - cookie에는 서버 및 클라이언트가 삭제하거나 브라우저가 종료되기 전에는 정보가 유지된다.(웹 브라우저가 저장한다)
+        - 쿠키는 사용자가 웹 사이트를 처음 방문할 때 웹 사이트에서 사용자 컴퓨터의 하드 디스크에 저장해 놓는 작은 파일.
+        - *웹 서버는 웹 브라우저가 전송한 쿠키를 사용해 필요한 데이터를 읽을 수 있다.*
+        - *HTTP 쿠키란 서버가 사용자에 웹 브라우저에 전송하는 작은 데이터 조각으로, 브라우저는 그 데이터 조각을 저장할 수 있고 동일한 서버로 다음 요청 시 함께 전송한다.*
+            >> 이에 따라, 동일한 유저인지 아닌지 확인할 수 있다.
+            >> 쿠키는 상태가 없는(statless) HTTP 프로토콜에서 상태 기반 정보를 기억한다.
+        - flash정보 또한 cookie. : 휘발성이므로 정보가 전달된 이후에는 사라짐.
+        * 목적  
+            - 세션 관리
+            - 개인화
+            - 트래킹
+        * 사용
+            - `cookies` hash 타입을 사용해 설정 가능
+            - `flash` hash 타입을 사용해 설정 가능
+    * session
+    
