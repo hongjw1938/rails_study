@@ -68,6 +68,12 @@
             - ip를 기반으로 위치를 알려주는 gem
             - Gemfile에 gem 'geocoder'로 설치 가능
             - request.location : 위치 정보, request.location.region : 지역 정보
+    ** HTTP method
+        * get
+        * post
+        * put : 수정시 사용, 일부 브라우저에서는 지원하지 않음. 따라서 patch와 같이 route시킴, 전체 데이터를 교체함. 모든 필드를 항상 새로운 값으로
+        * patch : 수정시 사용, 부분 데이터를 업데이트 함.
+        * delete : 서버에 리소스 삭제 요청
 ![이미지](./readme_img/mvc.JPG)
 <a href="http://getbootstrap.com/docs/4.1/getting-started/download/">부트스트랩 정보 참조</a>
 ### 3. MVC
@@ -92,6 +98,11 @@
         - routes.rb
             >> get/post방식을 간단히 mapping가능함.
             >> root keyword를 통해 root디렉토리로 연결시 매핑을 할 수 있다.
+        - parameter 사용
+            >> `params[:parameter명]`으로 parameter value를 인식할 수 있다.
+            * find함수로 db 검색(약 4가지)
+                >> `find`함수를 사용하여 db에서 검색할 parameter지정 가능
+                >> 특정 column을 사용해 찾기를 원하는 경우 : `find_by_user_name(params[:parameter명])`과 같이 찾을 수 있다.
     * Model(아래 스샷 참조)
         - 생성
             >> `$ rails g model 모델명`
@@ -162,12 +173,20 @@
         - view helper의 일종
         - 참조 : http://guides.rubyonrails.org/form_helpers.html
     * 예시
-        >> input 태그 submit 타입
-            - `<%= submit_tag("tweet") %>`
-            - `<input type="submit" value="tweet">`
+        >> input 태그
+            * submit
+                - `<%= submit_tag("tweet") %>`
+                - `<input type="submit" value="tweet">`
+            * password
+                - `<%= password_field_tag(:password) %>`
         >> textarea 태그
             - `<%= text_area_tag(:contents, params[:contents], placeholder: "What's happening?", size: "24x6") %>`
             - `<textarea placeholder="What's happening?"></textarea>`
+        >> a 태그
+            - `<%= link_to "새글 쓰기", :method => 'get'%>`
+        >> form 태그
+            - `<%= form_tag("/경로", method: "put")`
+            - form helper에서 form태그는 post가 default이다.
 ### 6. cookie / session
     * cookie
         - 서버와 클라이언트가 요청하는 정보는 독립적으로 작용한다.
@@ -187,4 +206,31 @@
             - `cookies` hash 타입을 사용해 설정 가능
             - `flash` hash 타입을 사용해 설정 가능
     * session
-    
+        - session id를 생성하여 server memory에 저장.
+        - F12 - application에 보면 암호화되어 저장되어 있는 것을 확인 가능
+        - 즉, 클라이언트 및 서버 양단에서 저장한다.(cookie는 클라이언트에서 저장)
+        - 독립적인 request, response가 전달되는 웹 환경에서 정보를 지속적으로 저장하기 위해 쿠키를 사용했으나 이는 위조가 가능하고 안전하지 않다.
+        - 따라서, 서버에 정보를 저장하고 해당 위치, 즉 session ID를 생성해 client에 저장하여 정보를 유지한다.
+        - `session` hash 타입을 사용해 설정 가능 : `session[:user_id]`
+        - `session` hash 타입은 매우 방대한 정보를 저장하고 있음.
+        - 구현한 내용은 daum_cafe_app 부분 참조
+### 7. daum_cafe_app 만들기
+    ** rails app 생성
+        - rails _5.0.6_ new name
+        * 모델 생성
+            - rails g model post
+        * controller 생성
+            - rails g controller board index show new edit
+            - 뒤의 parameter를 주면 view파일도 동시에 생성가능
+    * route 지정
+        - RESTful 한 방식으로 지정할 것.
+        - 수정 : put, patch
+        - 삭제 : delete
+    * 세션을 이용한 로그인 시스템 만들기
+        - `session[:지정hash]` : 이를 이용해 특정 hash key에 value를 저장할 수 있다.
+        - 일반적으로 고유한 id를 찾을 수 없으므로 login을 구현시, id를 이용해 찾아야 한다.
+            >> 유저가 존재하는지 확인하기 위해 `nil?`을 사용. 비밀번호 일치 여부 확인을 위해 `eql?`사용
+            >> `find_by_column명(params[:parameter명])`으로 찾는다.
+        - id를 찾아서 db에 저장된 객체를 찾았으면 해당 id에 따른 고유한 값을 `session[:current_name]`과 같이 hash타입에 저장한다.
+        - 이에 따라 현재 로그인된 유저 정보를 index에 보여줄 수 있다.
+            >> `model명.find(session[:current_name]) if session[:current_name]`으로 찾고 변수에 저장해 사용할 수 있다.
