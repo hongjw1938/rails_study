@@ -74,6 +74,27 @@
         * put : 수정시 사용, 일부 브라우저에서는 지원하지 않음. 따라서 patch와 같이 route시킴, 전체 데이터를 교체함. 모든 필드를 항상 새로운 값으로
         * patch : 수정시 사용, 부분 데이터를 업데이트 함.
         * delete : 서버에 리소스 삭제 요청
+    * ruby code
+        - `p / puts`
+            >> `p` : 내부 구조까지 전부 보여줌
+            >> `puts` : 객체를 보여줌
+    * rails c
+        * rails command를 불러오는 명령어
+        * 코드
+            - 객체 존재여부, 내용이 비어있는지 여부 확인하려면?
+                >> `nil?`
+                >> `present?`
+                >> `empty?`
+            - 객체 일치여부
+                >> `eql?`
+    * rails method
+        - ?
+            >> return 값이 `true`, `false`인 경우에 이와 같이 명명한다.
+            >> `def user_signed_in?`
+               `end`
+        - !(bang)
+            >> 의도하지 않은 액션이 발생할 수 있는 메소드에 붙여준다.
+            
 ![이미지](./readme_img/mvc.JPG)
 <a href="http://getbootstrap.com/docs/4.1/getting-started/download/">부트스트랩 정보 참조</a>
 ### 3. MVC
@@ -101,8 +122,26 @@
         - parameter 사용
             >> `params[:parameter명]`으로 parameter value를 인식할 수 있다.
             * find함수로 db 검색(약 4가지)
-                >> `find`함수를 사용하여 db에서 검색할 parameter지정 가능
                 >> 특정 column을 사용해 찾기를 원하는 경우 : `find_by_user_name(params[:parameter명])`과 같이 찾을 수 있다.
+                1. `Model.find(id)`
+                    >>  이 방식은 인덱싱이 되어 있는 컬럼을 이용하는 것. 검색속도가 매우 빠르며 항상 고유한 값을 가진다.
+                    >> `find`함수를 사용하여 db에서 검색할 parameter지정 가능
+                2. `Model.find_by_컬럼명(value)`
+                    >> 사용자가 입력했던 값으로 검색해야 하는 경우
+                    >> 게시글 검색시, 작성자, 제목 등으로 검색하는 경우
+                    >> `find_by`의 특징 : `1개만 검색된다.
+                3. `Model.where(컬럼명: 검색어값)`
+                    >> ex) `User.where(user_name: "hello")`
+                    >> 결과 값이 여러개. 배열형태. 일치하는 값이 없는 경우에도 빈 배열이 나옴(실제 배열이 아니라 duck typing)
+                    >> 따라서 `nil?`로 검색하면 `false`값을 얻을 수 있다.
+                4. `Model.where("컬럼명 LIKE ?", "%#{value}%")`
+                    >> ex) `User.where("user_name LIKE ?", "%h%")`
+                    >> `Model.where("컬럼명 LIKE '%#(value)%'")` : 가능한 방식이지만 사용해선 안된다.
+                        - 사용하면 안되는 이유??
+                            >> 즉각적인 SQL Injection이 가능해진다.(보안에 취약한 구조). 즉, 사용자가 SQL문을 통해 직접 쿼리가 가능해진다.
+                    >> 텍스트(string, text type)가 특정 단어, 문장을 포함하고 있는가를 검색
+                    >> 다만, 이 방식은 Full table scan으로 오래 걸리는 방식이다.
+                    >> 이에 따라, Full text search라는 방식을 사용하기도 함.(찾아볼것)
     * Model(아래 스샷 참조)
         - 생성
             >> `$ rails g model 모델명`
@@ -230,7 +269,57 @@
         - `session[:지정hash]` : 이를 이용해 특정 hash key에 value를 저장할 수 있다.
         - 일반적으로 고유한 id를 찾을 수 없으므로 login을 구현시, id를 이용해 찾아야 한다.
             >> 유저가 존재하는지 확인하기 위해 `nil?`을 사용. 비밀번호 일치 여부 확인을 위해 `eql?`사용
+            >> 검색한 내용을 활용시 `empty?`를 사용해 비어있는지 확인할 수 있다.
+            >> 존재여부를 묻는 경우 `present?`를 사용할 수도 있다.
+            `user.present?`
             >> `find_by_column명(params[:parameter명])`으로 찾는다.
         - id를 찾아서 db에 저장된 객체를 찾았으면 해당 id에 따른 고유한 값을 `session[:current_name]`과 같이 hash타입에 저장한다.
         - 이에 따라 현재 로그인된 유저 정보를 index에 보여줄 수 있다.
             >> `model명.find(session[:current_name]) if session[:current_name]`으로 찾고 변수에 저장해 사용할 수 있다.
+    * 코드 줄이기
+        - 동일한 코드의 반복을 줄일 필요가 있다. 하나의 메소드로 관리
+            >> `def set_post`
+                   `@post = Post.find(params[:id])`
+                `end`
+            >> 위와 같이 하나의 메소드로 코드를 지정하면 하나의 요청에서는 해당 값이 유지되어 사용된다.
+            >> 이러한 사용방식을 택할 경우, 변수는 다른 곳에서도 반드시 일치시켜야 한다.
+            >> 그러나 코드 중복 자체는 줄일 수 없음.
+            >> 따라서, filter를 사용해 코드 중복을 줄일 수 있다.
+        - filter??
+            >> Filters are methods that are run "before", "after" or "around" a controller action.
+            >> `before_action :require_login`와 같이 사용할 수 있다.
+            >> 그러나 모든 action에 대해 지정하면 오류가 날 수 있으므로, 특정 경우에만 사용토록 해야 한다.(only)
+            >> `before_action :set_post, only: [:show, :edit, :update, :destroy]`
+            >> `before_action :set_post, except: [:index, :new, :create]` : 이와 같이 제외하는 방식으로 사용해도 된다.
+        - application_controller이용
+            >> 현재 로그인된 유저 확인, 로그인 상태 확인 메소드 생성
+            >> 어디서든 메소드를 불러 즉각적으로 사용할 수 있음.
+            >> 따라서 해당 코드를 다른 컨트롤러에서 사용 가능.
+            >> 이를 통해 특정 액션의 경우 로그인된 상태에서만 입장할 수 있게 하려면?
+                `def authenticate_user!`
+                `   unless user_signed_in?`
+                `    redirect_to '/sign_in'`
+         
+                `    end`
+                `end`
+            >> 위와 같이 메소드를 지정한 다음 board_controller에 filter를 사용
+                `before_action :authenticate_user!, except: [:index, :show]`
+            >> View file에서 controller에 있는 action을 사용하기 위해 시도하는 경우
+                - 단순히 사용하면 선언되지 않은 메소드라고 오류를 내보낸다.
+                - Cycle상, controller에 있던 메소드를 거쳐서 view로 넘어온 것이기 때문에 다시 돌아가서 확인할 수가 없는 것이다.
+                - 따라서, helper_method를 사용한다.
+                - `helper_method :메소드명` 과 같이 사용할 수 있다.
+    * 한명의 유저가 여러 글을 작성(1:n 구조 구현)
+        - 유저가 1이고 글(post)가 n이다. 따라서 다음과 같이 rb file에 작성할 수 있다.
+            >> user.rb에 넣을 코드 : `has_many :posts`
+            >> post.rb에 넣을 코드 : `belongs_to :users`
+            >> 반드시 복수형으로 지정해야 한다.
+        - db를 변경한다. 모델명_id를 통해 foreign key를 지정할 수 있다.
+            >> `t.integer :user_id`
+            >> 위와 같이 posts table에 칼럼을 추가하여 외래키를 지정할 수 있다.
+            >> rails c를 통해 command하고 특정 유저를 만들고 post객체를 만든 다음 post를 채워넣고
+                ->> `u.posts`, `p.user`를 통해 user가 작성한 post들, post를 작성한 user 정보를 확인할 수 있다.
+        - 이에 따라 controller에서 post를 create할 때마다 user의 id를 저장해야 한다.
+            >> `post.user_id = current_user.id`로 application_controller에 있는 current_user메소드를 호출하고
+            >> 세션에 저장된 user_id를 통해 User모델에서 객체를 찾고 고유한 해당 id값을 저장한다.
+        - 위 과정으로 외래키를 지정할 수 있으며, user / post를 연결해 각각에 대해 쿼리할 수 있다.
