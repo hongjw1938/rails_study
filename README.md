@@ -88,13 +88,16 @@
             - 객체 일치여부
                 >> `eql?`
     * rails method
+        cf) 아래의 !, ?와 같은 경우는 필수는 아니고, 명시적인 표시를 할 때 사용한다.
+            - 특정 메소드의 경우에는 작동은 같으나 결과가 다를 수 있다!(ex- gsub)
         - ?
             >> return 값이 `true`, `false`인 경우에 이와 같이 명명한다.
             >> `def user_signed_in?`
                `end`
         - !(bang)
             >> 의도하지 않은 액션이 발생할 수 있는 메소드에 붙여준다.
-            
+        - private
+            >> controller의 특정 구간에 private을 써놓으면 그 아래 쪽 method는 전체가 private으로 다른 곳에서 호출할 수 없다.
 ![이미지](./readme_img/mvc.JPG)
 <a href="http://getbootstrap.com/docs/4.1/getting-started/download/">부트스트랩 정보 참조</a>
 ### 3. MVC
@@ -317,6 +320,7 @@
         - db를 변경한다. 모델명_id를 통해 foreign key를 지정할 수 있다.
             >> `t.integer :user_id`
             >> 위와 같이 posts table에 칼럼을 추가하여 외래키를 지정할 수 있다.
+            >> 외래키 지정시에는 `:foreign_key true`로 속성을 줄 수 있지만, 만약 table이 post가 먼저 만들어지고 user가 이후에 만들어지는 경우에는 불가능.
             >> rails c를 통해 command하고 특정 유저를 만들고 post객체를 만든 다음 post를 채워넣고
                 ->> `u.posts`, `p.user`를 통해 user가 작성한 post들, post를 작성한 user 정보를 확인할 수 있다.
         - 이에 따라 controller에서 post를 create할 때마다 user의 id를 저장해야 한다.
