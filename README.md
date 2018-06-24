@@ -1,189 +1,192 @@
 ##  RAILS
 ### 1. 기본 설치
-    * C9에서 사용하기 위해 cd ..로 최상위로 이동한다.
+* C9에서 사용하기 위해 cd ..로 최상위로 이동한다.
     * 설치
         - gem install rails -v 5.0.6 : rails 5.0.6버젼 설치
         - rvm install 2.4.1 : version manager를 이용해 ruby 2.4.1설치
         - rvm default 2.4.1 로 기본 버젼 지정 가능
         - rails _5.0.6_ new test_app : 프로젝트 생성(test_app이름으로)
-    * 서버 동작시
-        - 우상단의 Run Project는 workspace를 기반으로 되어 있음
-        - rails s -b $PORT -o $IP : 실행
+* 서버 동작시
+    - 우상단의 Run Project는 workspace를 기반으로 되어 있음
+    - `rails s -b $PORT -o $IP` : 실행
 ### 2. 기본
-    * gem
+* gem
         - ruby가 사용하는 library
-    * bundler : 설치 --> gem install bundler
-        - 내 프로젝트에 사용될 모든 gem을 자동으로 설치함
-        - 해당 gem은 Gemfile에 명시한다.
-        - Gemfile에 사용할 gem을 명시한 이후 터미널에 다음 명령어 입력
-            >> `bundle install`
-            >> 해당 명령어는 사용할 라이브러리를 추가한 이후에도 반드시 해당 명령어를 실행
-            >> 사용할 gem을 지우더라도 해당 명령어를 다시 수행해야 한다. 그래야 삭제됨
-    * rails 파일
-        - 실행되는 것이 모두 분리되어 있음.
-        - test_app/app
-            >> models, views, controllers
-        - config/routes.rb : action에 따른 어떤 logic을 수행할지 명시함
-            >> 클라이언트의 요청이 들어오면 어떤 controller의 action을 수행할지 지정함.
-            >> 아래와 같이 설정이 된다.
-                --> class __controller
-                        def action_name
-                        end
+* bundler : 설치 --> gem install bundler
+    - 내 프로젝트에 사용될 모든 gem을 자동으로 설치함
+    - 해당 gem은 Gemfile에 명시한다.
+    - Gemfile에 사용할 gem을 명시한 이후 터미널에 다음 명령어 입력
+        - `bundle install`
+        - 해당 명령어는 사용할 라이브러리를 추가한 이후에도 반드시 해당 명령어를 실행
+        - 사용할 gem을 지우더라도 해당 명령어를 다시 수행해야 한다. 그래야 삭제됨
+* rails 파일
+    - 실행되는 것이 모두 분리되어 있음.
+    - test_app/app
+        - models, views, controllers
+    - config/routes.rb : action에 따른 어떤 logic을 수행할지 명시함
+        - 클라이언트의 요청이 들어오면 어떤 controller의 action을 수행할지 지정함.
+        - 아래와 같이 설정이 된다.
+-<pre><code>
+            class __controller
+                def action_name
                     end
-        - db/ : ORM이용해 db 설정
-        - log : 로그파일. 각종 로그가 저장됨
-        - public : 외부에서 모두가 접근가능한 폴더
-        - test : rails의 프레임워크는 TDD(Test Driven Development)에 최적화되어 있음. 즉, test에 어떤 기능을 구현할지 명시할 수 있다.
-        - tmp : 임시파일 저장
-        - vendor : template 지정
-        - Gemfile : gem관리
-            >> `gem 'gem이름', '~> version'`과 같이 입력한다.
-        - Gemfile.lock : 설치된 dependencies 확인
-    * rails client - server 요청 관계
-        - 하단 이미지 확인
-            >> Routes는 config/routes.rb
-            >> DBMS --> db/
-    * cf)ORM
-        - ORM : db에 만들 table의 column등의 설정진행
-        - ORM : Object Relational Mapping : 객체와 관계형 DBMS간의 매핑을 지원해주는 Framework
-    * rails mode
-        - Development
-            >> 변경사항이 자동적으로 확인되고, 모든 로그가 찍힌다.
-        - Test
-        - Productionr
-            >> 변경사항이 자동적으로 저장되지 않음. 로그도 일부만 찍힌다.(낮은 level). `$ rails s`로 서버를 실행하지 않는다.
-    ** gems
-        * bootstrap
-            - getbootstrap.com에서 bootstrap gem을 사용하기 위한 방법이 설명되어 있다.
-                >> `class`를 이용하여 css를 입힐 수 있음.
-            - gemfile에 `gem 'bootstrap', '~> 4.1.1'`과 같이 하고 command에 bundle install을 하면 설치된다.
-            - 이후, app/assets/stylesheets/application.scss에서 `@import "bootstrap";`으로 import할 수 있다.
-            - 만약 scss가 아니고 css면 단순히 rename할 것
-            - 이 부트스트랩을 통해 Grid system을 이용하면 반응형 웹(사이즈에 따라 자동으로 조정)을 쉽게 구현할 수 있다.
-                >> app/views/layouts/application.html.erb에 다음 코드를 추가한다.
-                >> `<meta="viewport" content="width=devide-width, initial-scale=1, shrink-to-fit=no">`
-            * Grid System
-                - 12부분으로 나누어서 화면을 조정할 수 있다.
-        * geocoder
-            - ip를 기반으로 위치를 알려주는 gem
-            - Gemfile에 gem 'geocoder'로 설치 가능
-            - request.location : 위치 정보, request.location.region : 지역 정보
-    ** HTTP method
-        * get
-        * post
-        * put : 수정시 사용, 일부 브라우저에서는 지원하지 않음. 따라서 patch와 같이 route시킴, 전체 데이터를 교체함. 모든 필드를 항상 새로운 값으로
-        * patch : 수정시 사용, 부분 데이터를 업데이트 함.
-        * delete : 서버에 리소스 삭제 요청
-    * ruby code
-        - `p / puts`
-            >> `p` : 내부 구조까지 전부 보여줌
-            >> `puts` : 객체를 보여줌
-    * rails c
-        * rails command를 불러오는 명령어
-        * 코드
-            - 객체 존재여부, 내용이 비어있는지 여부 확인하려면?
-                >> `nil?`
-                >> `present?`
-                >> `empty?`
-            - 객체 일치여부
-                >> `eql?`
-    * rails method
-        cf) 아래의 !, ?와 같은 경우는 필수는 아니고, 명시적인 표시를 할 때 사용한다.
-            - 특정 메소드의 경우에는 작동은 같으나 결과가 다를 수 있다!(ex- gsub)
-        - ?
-            >> return 값이 `true`, `false`인 경우에 이와 같이 명명한다.
-            >> `def user_signed_in?`
-               `end`
-        - !(bang)
-            >> 의도하지 않은 액션이 발생할 수 있는 메소드에 붙여준다.
-        - private
-            >> controller의 특정 구간에 private을 써놓으면 그 아래 쪽 method는 전체가 private으로 다른 곳에서 호출할 수 없다.
-![이미지](./readme_img/mvc.JPG)
-<a href="http://getbootstrap.com/docs/4.1/getting-started/download/">부트스트랩 정보 참조</a>
+end
+</code></pre>
+    - db/ : ORM이용해 db 설정
+    - log : 로그파일. 각종 로그가 저장됨
+    - public : 외부에서 모두가 접근가능한 폴더
+    - test : rails의 프레임워크는 TDD(Test Driven Development)에 최적화되어 있음. 즉, test에 어떤 기능을 구현할지 명시할 수 있다.
+    - tmp : 임시파일 저장
+    - vendor : template 지정
+    - Gemfile : gem관리
+        - `gem 'gem이름', '~> version'`과 같이 입력한다.
+    - Gemfile.lock : 설치된 dependencies 확인
+* rails client - server 요청 관계
+    - 하단 이미지 확인
+        - Routes는 config/routes.rb
+        - DBMS --> db/
+* cf)ORM
+    - ORM : db에 만들 table의 column등의 설정진행
+    - ORM : Object Relational Mapping : 객체와 관계형 DBMS간의 매핑을 지원해주는 Framework
+* rails mode
+    - Development
+        - 변경사항이 자동적으로 확인되고, 모든 로그가 찍힌다.
+    - Test
+    - Productionr
+        - 변경사항이 자동적으로 저장되지 않음. 로그도 일부만 찍힌다.(낮은 level). `$ rails s`로 서버를 실행하지 않는다.
+* gems
+    * bootstrap
+        - getbootstrap.com에서 bootstrap gem을 사용하기 위한 방법이 설명되어 있다.
+            - `class`를 이용하여 css를 입힐 수 있음.
+        - gemfile에 `gem 'bootstrap', '~> 4.1.1'`과 같이 하고 command에 bundle install을 하면 설치된다.
+        - 이후, app/assets/stylesheets/application.scss에서 `@import "bootstrap";`으로 import할 수 있다.
+        - 만약 scss가 아니고 css면 단순히 rename할 것
+        - 이 부트스트랩을 통해 Grid system을 이용하면 반응형 웹(사이즈에 따라 자동으로 조정)을 쉽게 구현할 수 있다.
+            - app/views/layouts/application.html.erb에 다음 코드를 추가한다.
+            - `<meta="viewport" content="width=devide-width, initial-scale=1, shrink-to-fit=no">`
+        * Grid System
+            - 12부분으로 나누어서 화면을 조정할 수 있다.
+    - <a href="http://getbootstrap.com/docs/4.1/getting-started/download/">부트스트랩 정보 참조</a>
+    * geocoder
+        - ip를 기반으로 위치를 알려주는 gem
+        - Gemfile에 gem 'geocoder'로 설치 가능
+        - request.location : 위치 정보, request.location.region : 지역 정보
+* HTTP method
+    * get
+    * post
+    * put : 수정시 사용, 일부 브라우저에서는 지원하지 않음. 따라서 patch와 같이 route시킴, 전체 데이터를 교체함. 모든 필드를 항상 새로운 값으로
+    * patch : 수정시 사용, 부분 데이터를 업데이트 함.
+    * delete : 서버에 리소스 삭제 요청
+* ruby code
+    - `p / puts`
+        - `p` : 내부 구조까지 전부 보여줌
+        - `puts` : 객체를 보여줌
+* rails c
+    * rails command를 불러오는 명령어
+    * 코드
+        - 객체 존재여부, 내용이 비어있는지 여부 확인하려면?
+            - `nil?`
+            - `present?`
+            - `empty?`
+        - 객체 일치여부
+            - `eql?`
+* rails method
+    - cf) 아래의 !, ?와 같은 경우는 필수는 아니고, 명시적인 표시를 할 때 사용한다.
+        - 특정 메소드의 경우에는 작동은 같으나 결과가 다를 수 있다!(ex- gsub)
+    - ?
+        - return 값이 `true`, `false`인 경우에 이와 같이 명명한다.
+        - `def user_signed_in?`
+           `end`
+    - !(bang)
+        - 의도하지 않은 액션이 발생할 수 있는 메소드에 붙여준다.
+    - private
+        - controller의 특정 구간에 private을 써놓으면 그 아래 쪽 method는 전체가 private으로 다른 곳에서 호출할 수 없다.
+    
 ### 3. MVC
-    * Controller
-        - 역할?
-            >> 서비스 로직을 가짐.
-            >> 모델과 뷰를 연결해준다.
-        - 규칙
-            >> 모델, 뷰에 대해 알고 있어야 한다. 모델과 뷰는 서로에 대해서 알 수 없다.
-            >> 모델, 뷰의 변경에 대해 인지하고 있어야 한다.
-        - app.rb에서 작성한 모든 내용이 `Controller`에 들어간다.
-        - `Controller`는 하나의 서비스에 대해서만 작성함.
-        - `Controller`를 만들 때에는 `$ rails g controller 컨트롤러명` 을 이용한다.
-            >> ex) 아래 스샷 참조
-                `$rails g controller home`
-                `# app/controllers/home_controller.rb 파일 생성됨`
-                `class HomeController < ApplicationController >> 상속`
-            >> 모든 `Controller`는 `ApplicationController`를 상속받는다. (상단의 코드는 상속 코드)
-            >> `HomeController`에서 액션(`def`)를 작성하면 해당 액션명과 일치하는 `view`파일을 *app/views/home*폴더 밑에 작성한다.
-            >> 사용자의 요청을 받는 url설정은 *config/routes.rb*에서 수행된다.(아래 이미지 참조)
-            >> 이제는 erb :xxx 와 같은 코드는 필요가 없다. 자동 매핑
-        - routes.rb
-            >> get/post방식을 간단히 mapping가능함.
-            >> root keyword를 통해 root디렉토리로 연결시 매핑을 할 수 있다.
-        - parameter 사용
-            >> `params[:parameter명]`으로 parameter value를 인식할 수 있다.
-            * find함수로 db 검색(약 4가지)
-                >> 특정 column을 사용해 찾기를 원하는 경우 : `find_by_user_name(params[:parameter명])`과 같이 찾을 수 있다.
-                1. `Model.find(id)`
-                    >>  이 방식은 인덱싱이 되어 있는 컬럼을 이용하는 것. 검색속도가 매우 빠르며 항상 고유한 값을 가진다.
-                    >> `find`함수를 사용하여 db에서 검색할 parameter지정 가능
-                2. `Model.find_by_컬럼명(value)`
-                    >> 사용자가 입력했던 값으로 검색해야 하는 경우
-                    >> 게시글 검색시, 작성자, 제목 등으로 검색하는 경우
-                    >> `find_by`의 특징 : `1개만 검색된다.
-                3. `Model.where(컬럼명: 검색어값)`
-                    >> ex) `User.where(user_name: "hello")`
-                    >> 결과 값이 여러개. 배열형태. 일치하는 값이 없는 경우에도 빈 배열이 나옴(실제 배열이 아니라 duck typing)
-                    >> 따라서 `nil?`로 검색하면 `false`값을 얻을 수 있다.
-                4. `Model.where("컬럼명 LIKE ?", "%#{value}%")`
-                    >> ex) `User.where("user_name LIKE ?", "%h%")`
-                    >> `Model.where("컬럼명 LIKE '%#(value)%'")` : 가능한 방식이지만 사용해선 안된다.
-                        - 사용하면 안되는 이유??
-                            >> 즉각적인 SQL Injection이 가능해진다.(보안에 취약한 구조). 즉, 사용자가 SQL문을 통해 직접 쿼리가 가능해진다.
-                    >> 텍스트(string, text type)가 특정 단어, 문장을 포함하고 있는가를 검색
-                    >> 다만, 이 방식은 Full table scan으로 오래 걸리는 방식이다.
-                    >> 이에 따라, Full text search라는 방식을 사용하기도 함.(찾아볼것)
-    * Model(아래 스샷 참조)
-        - 생성
-            >> `$ rails g model 모델명`
-            >> *app/models*아래에 파일이 생성된다.
-            >> 생성된시간_create_모델명s.rb로 파일이 생성되고 여기에 table을 생성하기 위한 코드를 작성할 수 있다.
-        - 역할
-            >> 데이터를 가진 객체
-        - 규칙
-            >> 사용자가 편집하고자 하는 모든 데이터를 가지고 있어야 한다.
-            >> 뷰 또는 컨트롤러에 대해 어떠한 정보도 알지 못한다.
-            >> 변경이 일어나면, 변경에 대해 통지할 수 있는 방법을 구현해야 한다.
-        - command
-            >> `rake db:migrate` : 스키마 및 sql문장 생성. 모델명에 맞는 table이 생성된다.
-            >> `rails c`를 통해 rails command를 불러올 수 있다.
-            >> migrate가 된 이후에 Users라는 클래스 객체를 생성할 수 있고, 이를 변수에 저장할 수 있다.
-            >> 해당 변수에 저장하는 방식은 `u1 = User.new`와 같이 생성(row추가)하며, `u1.save`하면 자동으로 table에 user가 추가된다.
-            >> `u1.user_name = ""`처럼 table내의 column value를 지정할 수 잇으며 ORM방식에 의해 자동적으로 SQL문을 생성하여 table에 저장된다.
-            >> `u1.save`를 통해 sql문 실행 가능.
-            >> 만약 table에 추가적으로 schema를 수정하고 싶은 경우 rb파일에 `t.string = "email"` 과 같이 가능할 것이다.
-            >> 이 경우 수정을 위해서 `rake db:drop`을 통해 drop하고 다시 migrate해야 한다.(이전의 데이터는 모두 날아간다.)
-            >> 따라서 부득이하게 db를 수정해야 할 경우에는 add_column, add_index등의 명령을 통해서 추가해야 한다.
-            >> *app/models/모델명.rb*에는 아무런 내용이 없지만 ApplicationRecord를 상속함으로써 기능을 사용할 수 있다.
-        - column
-            >> string : 256자까지 가능
-            >> text : 대략 12000자 까지 가능
-    * View
-        - 생성
-            >> touch
-        - 역할
-            >> Client에게 보여줄 Front page
-        - 규칙
-            >> 액션과 뷰 파일의 이름은 반드시 일치시켜야 한다.
-## Controller---------------------------------------------------------------------------------------------------            
+- ![이미지](./readme_img/mvc.JPG)
+* Controller
+    - 역할?
+        - 서비스 로직을 가짐.
+        - 모델과 뷰를 연결해준다.
+    - 규칙
+        - 모델, 뷰에 대해 알고 있어야 한다. 모델과 뷰는 서로에 대해서 알 수 없다.
+        - 모델, 뷰의 변경에 대해 인지하고 있어야 한다.
+    - app.rb에서 작성한 모든 내용이 `Controller`에 들어간다.
+    - `Controller`는 하나의 서비스에 대해서만 작성함.
+    - `Controller`를 만들 때에는 `$ rails g controller 컨트롤러명` 을 이용한다.
+        - ex) 아래 스샷 참조
+            `$rails g controller home`
+            `# app/controllers/home_controller.rb 파일 생성됨`
+            `class HomeController < ApplicationController >> 상속`
+        - 모든 `Controller`는 `ApplicationController`를 상속받는다. (상단의 코드는 상속 코드)
+        - `HomeController`에서 액션(`def`)를 작성하면 해당 액션명과 일치하는 `view`파일을 *app/views/home*폴더 밑에 작성한다.
+        - 사용자의 요청을 받는 url설정은 *config/routes.rb*에서 수행된다.(아래 이미지 참조)
+        - 이제는 erb :xxx 와 같은 코드는 필요가 없다. 자동 매핑
+    - routes.rb
+        - get/post방식을 간단히 mapping가능함.
+        - root keyword를 통해 root디렉토리로 연결시 매핑을 할 수 있다.
+    - parameter 사용
+        - `params[:parameter명]`으로 parameter value를 인식할 수 있다.
+        * find함수로 db 검색(약 4가지)
+            - 특정 column을 사용해 찾기를 원하는 경우 : `find_by_user_name(params[:parameter명])`과 같이 찾을 수 있다.
+            1. `Model.find(id)`
+                -  이 방식은 인덱싱이 되어 있는 컬럼을 이용하는 것. 검색속도가 매우 빠르며 항상 고유한 값을 가진다.
+                - `find`함수를 사용하여 db에서 검색할 parameter지정 가능
+            2. `Model.find_by_컬럼명(value)`
+                - 사용자가 입력했던 값으로 검색해야 하는 경우
+                - 게시글 검색시, 작성자, 제목 등으로 검색하는 경우
+                - `find_by`의 특징 : `1개만 검색된다.
+            3. `Model.where(컬럼명: 검색어값)`
+                - ex) `User.where(user_name: "hello")`
+                - 결과 값이 여러개. 배열형태. 일치하는 값이 없는 경우에도 빈 배열이 나옴(실제 배열이 아니라 duck typing)
+                - 따라서 `nil?`로 검색하면 `false`값을 얻을 수 있다.
+            4. `Model.where("컬럼명 LIKE ?", "%#{value}%")`
+                - ex) `User.where("user_name LIKE ?", "%h%")`
+                - `Model.where("컬럼명 LIKE '%#(value)%'")` : 가능한 방식이지만 사용해선 안된다.
+                    - 사용하면 안되는 이유??
+                        - 즉각적인 SQL Injection이 가능해진다.(보안에 취약한 구조). 즉, 사용자가 SQL문을 통해 직접 쿼리가 가능해진다.
+                - 텍스트(string, text type)가 특정 단어, 문장을 포함하고 있는가를 검색
+                - 다만, 이 방식은 Full table scan으로 오래 걸리는 방식이다.
+                - 이에 따라, Full text search라는 방식을 사용하기도 함.(찾아볼것)
+## Controller----------------------            
 ![이미지](./readme_img/after_command.JPG)            
 ![이미지](./readme_img/home_controller.JPG)            
-![이미지](./readme_img/route_file.JPG)                            
-## Model--------------------------------------------------------------------------------------------------------
+![이미지](./readme_img/route_file.JPG)
+* Model(아래 스샷 참조)
+    - 생성
+        - `$ rails g model 모델명`
+        - *app/models*아래에 파일이 생성된다.
+        - 생성된시간_create_모델명s.rb로 파일이 생성되고 여기에 table을 생성하기 위한 코드를 작성할 수 있다.
+    - 역할
+        - 데이터를 가진 객체
+    - 규칙
+        - 사용자가 편집하고자 하는 모든 데이터를 가지고 있어야 한다.
+        - 뷰 또는 컨트롤러에 대해 어떠한 정보도 알지 못한다.
+        - 변경이 일어나면, 변경에 대해 통지할 수 있는 방법을 구현해야 한다.
+    - command
+        - `rake db:migrate` : 스키마 및 sql문장 생성. 모델명에 맞는 table이 생성된다.
+        - `rails c`를 통해 rails command를 불러올 수 있다.
+        - migrate가 된 이후에 Users라는 클래스 객체를 생성할 수 있고, 이를 변수에 저장할 수 있다.
+        - 해당 변수에 저장하는 방식은 `u1 = User.new`와 같이 생성(row추가)하며, `u1.save`하면 자동으로 table에 user가 추가된다.
+        - `u1.user_name = ""`처럼 table내의 column value를 지정할 수 잇으며 ORM방식에 의해 자동적으로 SQL문을 생성하여 table에 저장된다.
+        - `u1.save`를 통해 sql문 실행 가능.
+        - 만약 table에 추가적으로 schema를 수정하고 싶은 경우 rb파일에 `t.string = "email"` 과 같이 가능할 것이다.
+        - 이 경우 수정을 위해서 `rake db:drop`을 통해 drop하고 다시 migrate해야 한다.(이전의 데이터는 모두 날아간다.)
+        - 따라서 부득이하게 db를 수정해야 할 경우에는 add_column, add_index등의 명령을 통해서 추가해야 한다.
+        - *app/models/모델명.rb*에는 아무런 내용이 없지만 ApplicationRecord를 상속함으로써 기능을 사용할 수 있다.
+    - column
+        - string : 256자까지 가능
+        - text : 대략 12000자 까지 가능
+## Model---------------------------
 ![이미지](./readme_img/make_model.JPG)
 ![이미지](./readme_img/ORM_model.JPG)
+* View
+    - 생성
+        - touch
+    - 역할
+        - Client에게 보여줄 Front page
+    - 규칙
+        - 액션과 뷰 파일의 이름은 반드시 일치시켜야 한다.
 ### 4. 유저등록 및 유저정보 가져오기
     * 진행
         - user controller생성 : `rails g controller user`
