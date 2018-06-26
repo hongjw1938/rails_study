@@ -33,6 +33,8 @@
 end
 </code></pre>
     - db/ : ORM이용해 db 설정
+        - seeds.rb : 다른 db 혹은 csv파일의 내용을 바로 로컬 db에 넣을 수 있다.
+            - `rake db:seed` 를 통해 적용 가능(seed는 drop, migrate, seed가 합쳐진 것)
     - log : 로그파일. 각종 로그가 저장됨
     - public : 외부에서 모두가 접근가능한 폴더
     - test : rails의 프레임워크는 TDD(Test Driven Development)에 최적화되어 있음. 즉, test에 어떤 기능을 구현할지 명시할 수 있다.
@@ -40,6 +42,7 @@ end
     - vendor : template 지정
     - Gemfile : gem관리
         - `gem 'gem이름', '~> version'`과 같이 입력한다.
+        - `group :development do` 여기에 사용하는 경우 실행시에만 작동하는 gem file을 줄 수 있다.
     - Gemfile.lock : 설치된 dependencies 확인
 * rails client - server 요청 관계
     - 하단 이미지 확인
@@ -71,6 +74,11 @@ end
         - ip를 기반으로 위치를 알려주는 gem
         - Gemfile에 gem 'geocoder'로 설치 가능
         - request.location : 위치 정보, request.location.region : 지역 정보
+    * rails db gem 
+        - 
+    * Faker gem
+        - <pre><code><a href="https://github.com/stympy/faker">참조</a></code></pre>
+        - Fake 데이터를 generate
 * HTTP method
     * get
     * post
@@ -101,7 +109,16 @@ end
         - 의도하지 않은 액션이 발생할 수 있는 메소드에 붙여준다.
     - private
         - controller의 특정 구간에 private을 써놓으면 그 아래 쪽 method는 전체가 private으로 다른 곳에서 호출할 수 없다.
-    
+    - db 입력
+        1. new : 새로운 객체 생성.
+        2. update : 객체 내용 update(save필요 없음)
+            - 만약 rollback되면 false리턴, 저장 되었으면 true리턴
+        3. create : 객체 생성. new, save가 모두 실행됨.
+        4. save : 저장. create, update시에는 필요 없음
+* other rails basic
+    - require
+        - parameter가 존재하는지 확신시킴.
+        - 만약 parameter가 존재하면, 해당 parameter의 key에 대한 value를 return. 없으면 에러
 ### 3. MVC
 - ![이미지](./readme_img/mvc.JPG)
 * Controller
@@ -113,7 +130,7 @@ end
         - 모델, 뷰의 변경에 대해 인지하고 있어야 한다.
     - app.rb에서 작성한 모든 내용이 `Controller`에 들어간다.
     - `Controller`는 하나의 서비스에 대해서만 작성함.
-    - `Controller`를 만들 때에는 `$ rails g controller 컨트롤러명` 을 이용한다.
+    - `Controller`를 만들 때에는 `$ rails g controller 컨트롤러명` 을 이용한다.(복수형으로 할 것)
         - ex) 아래 스샷 참조
             `$rails g controller home`
             `# app/controllers/home_controller.rb 파일 생성됨`
@@ -148,6 +165,10 @@ end
                 - 텍스트(string, text type)가 특정 단어, 문장을 포함하고 있는가를 검색
                 - 다만, 이 방식은 Full table scan으로 오래 걸리는 방식이다.
                 - 이에 따라, Full text search라는 방식을 사용하기도 함.(찾아볼것)
+    - DB에 입력(두 가지 방법)
+        1. 위와 같이 `params[:parameter명]`을 통해 new method를 사용하여 입력(save method 사용해야 함)
+        2. update method사용(save필요 없음)
+        3. create method사용(new, save를 모두 실행해줌.)
 ## Controller----------------------            
 ![이미지](./readme_img/after_command.JPG)            
 ![이미지](./readme_img/home_controller.JPG)            
@@ -164,7 +185,7 @@ end
         - 뷰 또는 컨트롤러에 대해 어떠한 정보도 알지 못한다.
         - 변경이 일어나면, 변경에 대해 통지할 수 있는 방법을 구현해야 한다.
     - command
-        - `rake db:migrate` : 스키마 및 sql문장 생성. 모델명에 맞는 table이 생성된다.
+        - `rake db:migrate` : 스키마 및 sql문장 생성. 모델명에 맞는 table이 생성된다.(`rake db:reset`하면 내용만 지움)
         - `rails c`를 통해 rails command를 불러올 수 있다.
         - migrate가 된 이후에 Users라는 클래스 객체를 생성할 수 있고, 이를 변수에 저장할 수 있다.
         - 해당 변수에 저장하는 방식은 `u1 = User.new`와 같이 생성(row추가)하며, `u1.save`하면 자동으로 table에 user가 추가된다.
@@ -196,6 +217,8 @@ end
             - index에는 모델명.all을 통해 전체 row의 정보를 읽어올 수 있다.
             - show에는 모델명.find를 통해 하나의 row의 정보를 찾아 읽어올 수 있다.
             - create에는 new, save등으로 유저 정보를 생성할 수 있다.(개인 유저 정보를 볼 수 있는 곳으로 redirect : redirect_to사용)
+                - redirect_to 에 notice를 줄 수 있다. notice가 flash의 key가 되며, 내용이 value가 된다.
+                - `redirect_to @post, flash: {success: 'Post was successfully created.'}`와 같이 현재는 변경되었다.
     - POST방식 rails 요청시
         - POST방식으로 정보를 요청하게 되면 단순히 요청시에 rails에서는 오류가 난다.
         - 안정성 및 보안을 높이기 위해서 특정한 토큰을 정보 요청시 같이 전달해야만 한다.
@@ -316,9 +339,9 @@ end
             - `helper_method :메소드명` 과 같이 사용할 수 있다.
 * 한명의 유저가 여러 글을 작성(1:n 구조 구현)
     - 유저가 1이고 글(post)가 n이다. 따라서 다음과 같이 rb file에 작성할 수 있다.
-        - user.rb에 넣을 코드 : `has_many :posts`
-        - post.rb에 넣을 코드 : `belongs_to :users`
-        - 반드시 복수형으로 지정해야 한다.
+        - user.rb에 넣을 코드 : `has_many :posts` : 반드시 복수형으로 지정해야 한다.
+        - post.rb에 넣을 코드 : `belongs_to :user`
+        - posts와 user는 메소드 처럼 사용할 수 있다.
     - db를 변경한다. 모델명_id를 통해 foreign key를 지정할 수 있다.
         - `t.integer :user_id`
         - 위와 같이 posts table에 칼럼을 추가하여 외래키를 지정할 수 있다.
@@ -329,3 +352,93 @@ end
         - `post.user_id = current_user.id`로 application_controller에 있는 current_user메소드를 호출하고
         - 세션에 저장된 user_id를 통해 User모델에서 객체를 찾고 고유한 해당 id값을 저장한다.
     - 위 과정으로 외래키를 지정할 수 있으며, user / post를 연결해 각각에 대해 쿼리할 수 있다.
+* Rendering
+    - 참조 : <pre><code><a href="http://guides.rubyonrails.org/layouts_and_rendering.html">내용참조</a></code></pre>
+    - 특정 내용을 다른 페이지에 위치시킬 수 있다.(렌더링)
+    - 파일을 분해하여 파편화하고 관리가 편해지도록 만들 수 있다. 이 경우 사용
+    - 방법
+        - _file명.html.erb로 파일을 만들고 내용을 채워넣는다.(각 내용을 파편화)
+        - 실제 보여줄 페이지에서 `<%= render '파일명(_제외됨)' %>`와 같이 사용하면 된다.
+        - 만약 렌더링할 페이지를 특정 위치에 놓은 경우, 해당 resource uri를 주면 된다.
+        - 보통 여러 view에서 공유할 렌더링 페이지는 shared라고 폴더를 만들고 해당 내용을 관리함.
+        - `<%= render '파일명', 분해된 파일에서 사용코자 하는 변수명: 실제 변수명 %>` : 이와 같이 parameter를 줄 수 있다.
+            - 이 경우에는 해당 변수를 이용하여 rendering 시킬 수 있다.
+### 8. Scaffold
+* 생성
+    - `rails g scaffold 이름 title:string contents:text`
+    - 위 명령어를 실행하면, scaffold가 생성되며 자동으로 RESTful형식으로 route가 추가된다.(`resources :scaffold명`)
+        - `rake routes`명령을 통해 확인할 수 있다. 
+* form_for
+    - 기존 form_tag의 경우
+        - 기존의 경우 `<%= form_tag("url") do %> <% end %> `와 같이 작성하고 내부에 `text_area_tag, text_field_tag`를 사용했다.
+        - 문제는, 이 형태를 사용하게 되면 `edit`과 같은 부분에서 중복해서 사용할 수 없다.
+        - 그러나, 모델과 관련 없는 parameter도 넘길 수 있다.(보안 이슈 발생 가능)
+    - form_for의 경우
+        - 특정한 parameter를 넘기는 것이 불가능. 즉, model과 관련없는 input tag는 설정 불가하다.
+        - 또한 `edit`과 `new`와 같이 코드가 다른 경우에도 스스로 인식하여 value를 채우거나 없으면 채워넣지 않는 방식으로 작동함.
+        - 그 이유는 SQL Injection과 같은 공격에서 보안 이슈를 해결하기 위함이다.
+        - 예시 <pre><code><%= form_for(@post) do |f| %>
+                        <%= f.text_field(:title) %>
+                        <%= f.text_area(:contents) %>
+                        <%= f.text_field(:description) %>  <-- 불가능 </code></pre>
+        - 이에 따라, scaffold는 tag에서 전달하는 name도 이중으로 전달된다. ex) `name="post[title]"`
+    - form_for html class 입히기
+        - `<%= form_for(post, html: {class: 'text-center'}) do |f| %>` 와 같이 설정.
+* scaffold 의 post_params
+    - <pre><code>def post_params
+                    params.require(:post).permit(:title, :contents)
+                end</code></pre>
+    - `require`에 의해 parameter가 존재하는지 확인하고 permit으로 형태 조정
+    - `{title: params[:post][:title], contents: [:post][:contents]}`와 같다.
+* link_to
+    - 링크를 지정시에 route에 지정된 prefix를 사용할 수 있다.
+    - `지정된prefix_path`를 이용해 지정 가능
+        - ex) `<%= link_to '글보기', post_path(post) %>`
+    - 알아서 필요한 key를 뽑아서 링크를 지정할 수 있다.
+    - method 또한 지정 가능.
+        - ex) `<%= link_to '삭제', post_path(@post), method: 'DELETE', class: 'btn btn-danger' %>`
+### 9. 댓글 기능 만들기(daum_cafe 참조)
+* 모델
+    - `rails g model comment content post_id: interger`
+* 관계(post와 comment 모델)
+    - 한 게시글에 여러 댓글(1 : n)
+    - 따라서, comment.rb 모델에는 `belongs_to :post`, post.rb 모델에는 `has_many :comments`
+* route
+    * 생성
+        - 어떤 게시글에 속할지 알아야 하므로 게시글의 id가 필요
+            - `post 'post/:id/comments/create' => "comments#create` : 특정 post(게시글)에 댓글을 만든다.
+    * 삭제
+        - 어떤 게시글에 들어가 있는지는 명확함. 댓글의 id만 필요
+            - `delete 'comments/:id' => 'comments#destroy'`
+* controller
+    - `rails g controller comments create destroy` : 우선 댓글 controller는 만들고 삭제할 수만 있게 하기 위해 action 설정
+    - 액션
+        - create
+            - 이 경우에는 특정 게시글에 댓글을 달아야 하므로 게시글의 id를 저장해야 한다.
+        - destroy
+            - 이 경우에는 댓글의 id만 있으면 삭제할 수 있다. 따라서 댓글의 id로 찾는다
+* view
+    - show
+        - 게시글이 show되는 부분에서 댓글이 삽입되고 삭제되어야 한다.
+### 10. M:N 관계 구현(daum_cafe참조)
+* 생성
+    - cafe와 user는 서로 M:N 관계이다. 유저는 여러 카페에 가입할 수 있으며, 카페는 여러 유저를 가질 수 있다.
+    - 모델링
+        - 1번 유저가 1,2,3번 카페에 가입
+            - `u1.dames => [1, 2, 3]`
+        - 2번 유저가 2,3번 카페에 가입
+        - 3번 유저는 1,3번 카페에 가입
+        - -------------------------
+        - 1번 카페에는 1,3번 유저가 가입했다.
+            - `c1.users => [1, 3]`
+        - 2번 카페에는 1,2번 유저가 가입했다.
+        - 3번 카페에는 1,2,3번 유저가 가입했다.
+* join table
+    - M:N의 관계를 가지는 Table관계에서 서로를 연결해주기 위해서 join table이 필요함
+    - 해당 table은 양 테이블의 id를 갖고 있음.
+    - 따라서, 양 쪽 id에 종속되므로 `belongs_to`를 2개 추가한다.
+* daum 및 user table
+    - memberships라는 join table을 통해서 각자의 객체를 여럿 가질 수 있다.
+    - 따라서, 기본적으로 `has_many :memberships`를 포함하며
+    - 추가적으로 `has_many :users | daums through: :memberships`를 통해 양 단을 연결할 수 있다.
+    - 여기 까지 완성하면, rails command에서 `reload!`로 load를 한 후에(필요시), `u1 = User.first`, `u1.daums`를 하면 u1이 가입한 카페를 확인할 수 있다.
