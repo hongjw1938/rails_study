@@ -79,6 +79,11 @@ end
     * Faker gem
         - <pre><code><a href="https://github.com/stympy/faker">참조</a></code></pre>
         - Fake 데이터를 generate
+    * bcrypt
+        - 비밀번호를 암호화 해주는 gem
+        - gem file에 기본으로 주석처리된 상태로 존재.
+        - authenticate method : 암호화된 비밀번호가 일치하는지 확인함.
+        - rb파일에 `has_secure_password`를 추가하여 사용할 수 있다.
 * HTTP method
     * get
     * post
@@ -142,6 +147,7 @@ end
     - routes.rb
         - get/post방식을 간단히 mapping가능함.
         - root keyword를 통해 root디렉토리로 연결시 매핑을 할 수 있다.
+        - as keyword를 통해 prefix를 지정할 수 있다.
     - parameter 사용
         - `params[:parameter명]`으로 parameter value를 인식할 수 있다.
         * find함수로 db 검색(약 4가지)
@@ -149,7 +155,7 @@ end
             1. `Model.find(id)`
                 -  이 방식은 인덱싱이 되어 있는 컬럼을 이용하는 것. 검색속도가 매우 빠르며 항상 고유한 값을 가진다.
                 - `find`함수를 사용하여 db에서 검색할 parameter지정 가능
-            2. `Model.find_by_컬럼명(value)`
+            2. `Model.find_by_컬럼명(value)` | `Model.find_by(컬럼명: value)`
                 - 사용자가 입력했던 값으로 검색해야 하는 경우
                 - 게시글 검색시, 작성자, 제목 등으로 검색하는 경우
                 - `find_by`의 특징 : `1개만 검색된다.
@@ -382,6 +388,7 @@ end
                         <%= f.text_area(:contents) %>
                         <%= f.text_field(:description) %>  <-- 불가능 </code></pre>
         - 이에 따라, scaffold는 tag에서 전달하는 name도 이중으로 전달된다. ex) `name="post[title]"`
+        - hidden input tag의 경우 : `hidden_field`
     - form_for html class 입히기
         - `<%= form_for(post, html: {class: 'text-center'}) do |f| %>` 와 같이 설정.
 * scaffold 의 post_params
@@ -397,6 +404,7 @@ end
     - 알아서 필요한 key를 뽑아서 링크를 지정할 수 있다.
     - method 또한 지정 가능.
         - ex) `<%= link_to '삭제', post_path(@post), method: 'DELETE', class: 'btn btn-danger' %>`
+        - 위에서 `@post`처럼 객체를 전달하면 RESTful한 URL이 생성되었기에 해당 id를 전달하게 된다.
 ### 9. 댓글 기능 만들기(daum_cafe 참조)
 * 모델
     - `rails g model comment content post_id: interger`
@@ -442,3 +450,51 @@ end
     - 따라서, 기본적으로 `has_many :memberships`를 포함하며
     - 추가적으로 `has_many :users | daums through: :memberships`를 통해 양 단을 연결할 수 있다.
     - 여기 까지 완성하면, rails command에서 `reload!`로 load를 한 후에(필요시), `u1 = User.first`, `u1.daums`를 하면 u1이 가입한 카페를 확인할 수 있다.
+* parameter전달 method
+    - <pre><code>def daum_params
+          params.require(:daum).permit(:title, :contents)
+      end</code></pre>
+    - 위와 같이 parameter를 전달하게 하는 method를 따로 구성하면 코드를 줄일 수 있다. `require`에 들어가는 simbol은 모델명을 사용한다.
+    - 특정 parameter만 전달할 수 있도록 지정할 수 있다.
+### 11. 전체 카페 구현(daum_cafe)
+* 기본 내용
+    - 모델
+        - daum(cafe를 의미), user, post(게시글 - 각 카페에 저장됨), membership(카페와 유저 M:N관계 join table), comment(댓글)
+    - 컨트롤러
+        - cafe, user, authenticate(회원가입, 로그인 등), comment, post
+    - view
+        - 
+* rails 설정
+    - route
+        - resources 사용시 각 RESTful URL이 생성됨.
+    - gem
+        - bootstrap : 부트스트랩의 UI 사용
+        - bcrypt : 비밀번호 암호화하여 사용하는 gem
+        - Faker : 테스트용으로 seed파일을 이용하여 무작위 데이터 입력시 사용
+    - seeds
+    - JS and Stylesheete
+        - `@import 'bootstrap';`으로 부트스트랩 import
+        - `popper, bootstrap require`
+* 카페
+    - 관계
+        - 한 명의 유저는 여러 카페를 가질 수 있고, 하나의 카페는 여러 유저를 회원으로 갖는다(유저와 M:N관계)
+            > Membership으로 Join Table을 만들어 관계설정
+
+        - 한 카페는 다수의 Post를 가질 수 있으며, 하나의 Post는 하나의 Cafe(daum)만 갖는다.(게시글과 1:N관계)
+        - 
+    - 모델(daum.rb)
+        - db에는 카페의 title, description, 개설한 user의 name(master_name)을 저장한다.
+    - 컨트롤러
+    - 뷰
+* 유저
+    - 모델
+    - 컨트롤러
+    - 뷰
+* 게시글(post)
+    - 모델
+    - 컨트롤러
+    - 뷰
+* 댓글(comment)
+    - 모델
+    - 컨트롤러
+    - 뷰
