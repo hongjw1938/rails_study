@@ -10,6 +10,13 @@
     - 우상단의 Run Project는 workspace를 기반으로 되어 있음
     - `rails s -b $PORT -o $IP` : 실행
 ### 2. 기본
+* 변수
+    - 지역, 인스턴스 변수 : `@`를 사용하거나 사용하지 않음. 사용시에는 view에서 사용가능
+    - 클래스 변수 : `@@` 사용
+* 상속
+    - ex) `class Users::SessionsController < Devise::SessionsController`
+        > Devise의 SessionsController를 상속한다.
+
 * gem
         - ruby가 사용하는 library
 * bundler : 설치 --> gem install bundler
@@ -97,6 +104,9 @@ end
         - 손쉽게 환경변수를 만들고 사용할 수 있는 rails gem
         - gem file에 추가한 후, `bundle install`, `bundle exec figaro install`를 한다.
         - configuration의 파일은 종종 매우 sensitive하기 때문에 자동으로 이를 통해 .gitignore에 추가할 수 있다.
+    * devise
+        - `gem devise` 로 설치한다.
+        - *dependency*가 매우 많은 `gem`이다.
 * HTTP method
     * get
     * post
@@ -150,6 +160,10 @@ end
     - require
         - parameter가 존재하는지 확신시킴.
         - 만약 parameter가 존재하면, 해당 parameter의 key에 대한 value를 return. 없으면 에러
+* hash type(3가지 방법이 있음) - 아래 코드를 중괄호로 묶어야 함.
+    1. `"key" => "value"`
+    2. `:key => "value"`
+    3. `key: "value"`
 ### 3. MVC
 - ![이미지](./readme_img/mvc.JPG)
 * Controller
@@ -688,3 +702,30 @@ end
         - destroy : 댓글을 삭제한다.
     - 뷰
         - _form : 댓글을 작성하기 위한 render form
+### 12. 디바이스로 구현하기
+### 13. 카카오톡 챗봇 API
+* 참조
+    - <a href="https://github.com/5chang2/kakao_bot_sample">사용방법</a>
+    - <a href="https://github.com/plusfriend/auto_reply">API 문서</a>
+* API 요청(request / response)
+    - request
+        - 이용자가 최초로 채팅방에 들어올 때 기본으로 키보드 영역에 표시될 자동응답 명령어의 목록을 호출하는 API.
+        - Specification
+            > `Method : GET`
+            `URL : http(s)://:your_server_url/keyboard`
+            `Content-Type : application/json; charset=utf-8`
+    - response
+        - 사용자가 선택한 명령어를 파트너사 서버로 전달하는 API
+        - 사용자가 선택한 명령어는 `content` parameter로 받을 수 있으며, response는 `message, keyboard`로 보낼 수 있다.
+        - Specification
+            > `Method : POST`
+            `URL : http(s)://:your_server_url/message`
+            `Content-Type : application/json; charset=utf-8`
+* controller 생성
+    - *keyboard controller* : `rails g controller keyboard`
+        - 이 키보드 컨트롤러에서 Hash 타입으로 값을 전달한다.
+* route
+    - API request방식이 keyboard로 이루어진다. 따라서 route도 변경한다.
+        - `get '/keyboard' => '프로젝트명#keyboard'` : 이와 같이 변경
+    - user로부터 받는 명령어를 post 방식으로 전달 받는다.
+        - `post '/message' => '프로젝트명#message'`
