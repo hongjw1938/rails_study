@@ -83,7 +83,7 @@ end
         - Gemfile에 gem 'geocoder'로 설치 가능
         - request.location : 위치 정보, request.location.region : 지역 정보
     * rails db gem 
-        - 
+        - database viewer를 지원하는 gem이다.
     * Faker gem
         - <pre><code><a href="https://github.com/stympy/faker">참조</a></code></pre>
         - Fake 데이터를 generate
@@ -107,6 +107,10 @@ end
     * devise
         - `gem devise` 로 설치한다.
         - *dependency*가 매우 많은 `gem`이다.
+    * turbolink
+        - js 파일을 읽어들이는데 도움을 주는 `gem`
+        - application.js에서 `require`를 통해 turbolink를 사용하고 application.html.erb에서 head부분에 `, 'data-turbolinks-track': 'reload'` 부분을 통해 로직을 작성한다.
+        - *asset/javascripts*아래에 있는 모든 js를 읽어들여 application.js로 합치는 역할을 한다.
 * HTTP method
     * get
     * post
@@ -437,6 +441,10 @@ end
         - 이에 따라, scaffold는 tag에서 전달하는 name도 이중으로 전달된다. ex) `name="post[title]"`
         - hidden input tag의 경우 : `hidden_field`
         - file upload : `file_field`
+    - form_for url
+        - `form_for(변수)`에서 변수가 비어있는지 채워져있는지에 따라서 자동으로 new / edit으로 지정된다.
+        - 따라서, 객체가 비어있는지, 저장되어 있는 값을 불러온건지가 중요!
+        - 따라서, view파일 까지 naming을 명확하게 일치시켜주지 않으면 오류가 난다.
     - form_for html class 입히기
         - `<%= form_for(post, html: {class: 'text-center'}) do |f| %>` 와 같이 설정.
 * scaffold 의 post_params
@@ -529,6 +537,9 @@ end
         - `popper, bootstrap require`
     - app
         - uploader(carrierwave gem 필요)
+            - 만들기
+                > `rails g uploader uploader이름`
+
             - uploader를 mount 시킨다
                 > `mount_uploader :image_path, ImageUploader` : 해당 내용을 post.rb로 마운트시킨다.
 
@@ -729,3 +740,63 @@ end
         - `get '/keyboard' => '프로젝트명#keyboard'` : 이와 같이 변경
     - user로부터 받는 명령어를 post 방식으로 전달 받는다.
         - `post '/message' => '프로젝트명#message'`
+### 14. JS
+* CSS선택자
+    - 참조 : <a href="https://www.w3schools.com/cssref/css_selectors.asp">W3S</a>
+* 함수
+    - 특정 Element 찾기
+        - getElementById("id명") : 가장 먼저 찾은 하나만 리턴
+        - getElementsByName("name")
+        - getElementsByClassName("class명")
+        - getElementsByTagName("tag명")
+        - querySelector("쿼리선택자") : 가장 먼저 찾은 하나만 리턴
+        - querySelectorAll("쿼리선택자")
+    - 속성 관련
+        - setAttribute("속성명", "속성 값"); : 속성을 변경할 수 있다.
+            - attribute는 `console.dir(객체)` 를 통해서 확인해보면 attribute라는 부분이 있다. 이 부분을 활용
+* 변수
+    - 선언 : var
+        - ex) `var btn = document.getElementById("title")`
+* 콘솔
+    - console.log
+    - console.error
+    - console.dir(객체) : 해당 객체가 가지는 모든 속성을 반환(변수에 저장한 경우 변수에 저장된 모든 객체에 대해 반환)
+* 이벤트(이벤트 감지 후 react)
+    - Event Listener : 이벤트 감지
+    - 다양한 속성 중, on으로 시작하는 것들이 대부분 event
+        > `요소.on이벤트이름 = react행위`와 같이 사용
+
+    - function : Event handler(이벤트 처리)
+        - function을 사용해 특정 react를 등록하면 이벤트가 발생시에 해당 함수가 작동한다.
+        * 함수 만드는 방법
+            1. 변수에 직접적으로 저장한다.(함수 표현식)
+                - 실행시에는 `변수명()`으로 실행
+                - 선언하기 전에 사용하면 실행되지 않는다.
+                > ex) `var func = function() {}`
+                
+                > `func()`
+                
+            2. `function function_name() { 실행문 }`(함수 선언식)
+                - 실행시에는 `함수명()`으로 실행
+                - 선언되기 이전에 사용해도 실행된다.
+                - 이와 같이 선언한 함수를 addEventListener로 사용하고 싶으면 이름만으로 넣어야 한다.
+                    - 왜냐하면, ()를 사용하면 실행을 의미하기 때문이다.
+                    > ex) `btn.addEventListener("mouseover", func2)`
+                    
+            3. 익명함수 - addEventListener와 같이 지정하는 경우 익명함수를 사용하기도 함
+            4. 선언된 함수를 핸들러로 지정 하는 방법
+                - 지정시에는 함수의 이름만으로 지정해야 한다.
+                - 만약 ()를 포함하는 경우에는 실행을 의미하기 때문에 반영되지 않는다.
+    - addEventListener를 사용한 이벤트 등록
+        - 해당 경우에는 직접 이벤트를 등록하지 않는다.
+        - 이벤트가 계속해서 쌓이는 방식(중첩될 위험이 있으므로 주의한다.)
+        - addEventListener를 사용시에는 on을 빼고 넣는다.
+        > 첫 번째 인자로 event로 주고, 두 번째 인자로 handler를 준다.
+        
+        > ex : `btn.addEventListener("mouseover", function() {})`
+        
+* Syntax
+    - 조건문
+        - 자바와 동일
+        - if(조건) {} else {} 
+    - 반복분
