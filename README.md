@@ -158,8 +158,16 @@ end
             - 만약 rollback되면 false리턴, 저장 되었으면 true리턴
         3. create : 객체 생성. new, save가 모두 실행됨.
         4. save : 저장. create, update시에는 필요 없음
+        5. destroy : 객체를 삭제함. -> frozen 상태가 된다.
+        6. frozen? : destroy한 경우 true, 새로 만들었거나 기존 상태 유지의 경우 false
     - errors
         - transaction이 rollback되었을 때 해당 error를 볼 수 있다.
+* view
+    - action명.html.erb : 루비코드가 포함된 html
+    - action명.js.erb : 루비코드가 포함된 js
+* render와 redirect
+    - redirect는 301코드를 반환하여 다른 url로 이동시킨다.
+    - render는 그대로 코드가 끝난다. `js: jscode` 와 같이 즉각적으로 js code를 사용할 수 있다.(코드 자체가 응답이 된다.)
 * other rails basic
     - require
         - parameter가 존재하는지 확신시킴.
@@ -751,6 +759,10 @@ end
         - getElementsByTagName("tag명")
         - querySelector("쿼리선택자") : 가장 먼저 찾은 하나만 리턴
         - querySelectorAll("쿼리선택자")
+    - jQuery로 Element 찾기(배열처럼 인식하여 모두 보여줌)
+        - `$('.btn')` : btn class를 모두 보여준다.
+        - `$('button')` : button을 모두 찾아준다.
+        - `$('#title')` : title id를 가진 태그를 찾는다. 하지만 이 경우에도 역시 id는 유일하게 맨 처음 요소 하나만 반환한다.
     - 속성 관련
         - setAttribute("속성명", "속성 값"); : 속성을 변경할 수 있다.
             - attribute는 `console.dir(객체)` 를 통해서 확인해보면 attribute라는 부분이 있다. 이 부분을 활용
@@ -794,9 +806,160 @@ end
         > 첫 번째 인자로 event로 주고, 두 번째 인자로 handler를 준다.
         
         > ex : `btn.addEventListener("mouseover", function() {})`
-        
+    
+    - jQuery를 사용한 이벤트 적용
+        - <pre><code>
+            $(.btn).mouseover(function(){
+                alert("hahah");  
+            })
+        </code></pre>
+        - <pre><code>
+            $(.btn).on('mouseover', function(){
+                alert("hahah");  
+            })
+        </code></pre>
+        - 위와 같이 가능하며, 이 경우에 javascript에서 사용했던 방식과 다른 점은, btn이라는 클래스를 가진 모든 경우에 event가 적용된다는 것이다.
+        - 한 번에 여러 가지의 이벤트도 인식시킬 수 있다.
+        - <pre><code>
+        btn.on('mouseenter mouseout', function(){
+            if(btn.hasClass('btn-danger')){
+                btn.removeClass("btn-danger").addClass('btn-primary');
+            } else {
+                btn.removeClass('btn-primary').addClass('btn-danger');
+            }
+        });
+        </code></pre>
+        - 바로 위 코드를 더 쉽게 작성할 경우
+        - <pre><code>
+        btn.on('mouseenter mouseout', function(){
+            btn.toggleClass('btn-danger').toggleClass('btn-primary');
+        });
+        </code></pre>
+        - 그런데, 위와 같이 작성할 경우 모든 btn에 대해서 해당 이벤트가 작동한다.
+        - 따라서, `$(this)`를 사용한다.
+        - <pre><code>
+        btn.on('mouseenter mouseout', function(){
+            $(this).toggleClass('btn-danger').toggleClass('btn-primary');
+        });
+        </code></pre>
+* this 
+    - 이벤트가 발생한 자기 자신을 의미한다.
+    - `console.dir(this);` : html요소 자체
+    - `console.dir($(this));` : jQuery 요소 --> jQuery 함수를 사용할 수 있다.
 * Syntax
     - 조건문
         - 자바와 동일
         - if(조건) {} else {} 
     - 반복분
+* jQuery 함수
+    - hasClass : class를 가졌는지 확인
+    - addClass : class 추가
+    - removeClass : class 제거
+    - toggleClass : class추가 및 제거를 이벤트에 따라 수행(여러 클래스를 한 번에 다 작성해도 된다.)
+    - attr : 속성을 추가하거나 속성값을 반환
+        - <pre><code>
+            btn.on('mouseover', function(){
+                $('.card-img-top').attr('style','width:100px');
+            });
+        </code></pre>
+        - 위와 같이, card-img-top클래스를 가진 요소에 style을 추가할 수 있다.
+    - text : text value를 변경시킬 수 있다. 값을 넣지 않으면 해당 value를 꺼낸다(val()도 같은 역할)
+        - 만약 `$('객체명')`과 같이 사용하게 된다면, `innerHTML, innerText`는 사용할 수 있지만 반환값이 배열형이기 때문에 [0]과 같이 명시를 해야한다.
+        - <pre><code>
+            btn.on('mouseover', function(){
+                $('.card-title').text("Don't Touch me!");
+            });
+        </code></pre>
+        - 만약에 위 코드를 `$(.this)`를 사용해서 하고 싶은 경우, siblings method를 통해 find하여 찾아야만 한다.
+    - siblings : 자신과 같은 수준에 있는 요소들을 반환
+    - find : 자식 요소들 중에서 선택자로 준 것을 찾아 반환
+    - parent : 부모 요소를 반환
+    - `$(document).on('ready', function() {})` : document의 load가 끝나면 스크립트를 실행한다는 규정. 
+* JS함수
+    - innerHTML과 innerText의 차이 : HTML은 span이 있으면 그걸 통째로 뺴오고 Text는 Text만 빼옴. 그리고 인코딩의 차이가 있음.
+    - location.href, location.replace : 특정 url로 이동시킬 수 있다.
+* 실습
+    - 텍스트 변환기를 만들어본다.(일부러 오타를 만든다.)
+        - <pre><code>
+            <textarea id="input" placeholder="변환할 텍스트를 입력해주세요."></textarea>
+            <button class="translate">바꿔줘</button>
+            <h3></h3>
+        </code></pre>
+        - input에 들어있는 텍스트 중에서 '관리' -> '고나리', '확인' -> '호가인', '훤하다' -> '후너하다' 등으로 텍스트를 오타로 바꾸는 이벤트 핸들러 작성
+        - <a href="https://github.com/e-/Hangul.js">여기</a>에서 라이브러리를 받고 자음과 모음 분리하여 다시 단어로 합치기
+        - npm명령어 `npm install hangul-js`를 통해 읽어오고 js 를 application.js에서 추가한다.
+        - 나머지 로직은 아래를 참조
+        - <pre><code>
+                <script type="text/javascript">
+                      var btn = $('.translate');
+                      var input_value;
+                      btn.on("click", function(){
+                        input_value = $('#input').val();
+                        //console.log(input_value);
+                        
+                        var array1;
+                        var ch_array = [];
+                        var s = input_value.split("");
+                        //console.log(s);
+                        
+                        for (i = 0; i < s.length; i++) {
+                          if(Hangul.isComplete(s[i])){
+                            array1 = Hangul.disassemble(s[i], true);
+                            console.log("array1" + array1);
+                            
+                            if(Hangul.endsWithConsonant(s[i])){
+                              for(j = 0; j < array1[0].length; j++){
+                              //console.log(Hangul.isVowel(array1[j]))
+                              
+                                if(Hangul.isVowel(array1[0][j-1]) && Hangul.isVowel(array1[0][j]) && Hangul.isConsonant(array1[0][j+1])){
+                                  ch_array.push(array1[0][j+1]);
+                                  ch_array.push(array1[0][j]);
+                                  j++;
+                                } else {
+                                  ch_array.push(array1[0][j]);
+                                }
+                              
+                              }
+                            } else {
+                              for(j = 0; j < array1[0].length; j++){
+                                ch_array.push(array1[0][j]);
+                              }
+                            }  
+                          //console.log(Hangul.assemble(ch_array));  
+                        }
+                          
+                          
+                          $('.haha').text(Hangul.assemble(ch_array));
+                        }
+                      });
+                        
+                      
+                        
+                    </script>
+        </code></pre>
+* Ajax in rails
+    - 작동방식
+    - <pre><code>
+        $.ajax({
+            url: 어느 주소로 요청을 보내는가,
+            method: 어떤 http method 요청을 보낼것인가,
+            data: {
+                k: v 어떤 값을 함께 보낼 것인가,
+                // 서버에서는 params[k] => v
+            }
+        })
+        </code></pre>
+    - 실습(<a href="https://github.com/hongjw1991/watcha_app">참조</a>)
+        * 좋아요 기능 구현하기
+            - 특정 글에서 영화에 대한 좋아요를 누를 수 있고 눌렀으면 해당 내용을 표시하며, 누른 후에는 좋아요 취소 버튼을 보여준다.
+        * 모델
+            - `rails g model like`
+            - 한 유저는 여러 like를 누를 수 있으며, 하나의 영화는 여러 like를 받을 수 있다.
+            - 여기서 문제는, 한 작성자의 경우 movie에 대한 글을 작성했을 수가 있다. 따라서, 1:n과 m:n이 동시에 존재할 수 있다.
+                > 방법 : 1:n관계를 끊고 like는 직접 has_many를 통해 1:n으로 연결하고, movies는 like를 통해 연결하는 것(through)
+    
+        * 로직
+            - 좋아요 버튼을 눌렀을 경우, 서버에 요청
+                > 현재 유저가 현재 보고 있는 이 영화가 좋다고 하는 요청
+            
+            - 서버는 응답이 오면 좋아요 버튼의 텍스트를 좋아요 취소로 바꾸고, `btn-info` -> `btn-warning text-white`로 변경한다.
