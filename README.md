@@ -39,6 +39,9 @@
                     end
 end
 </code></pre>
+        - routing의 경우 scaffold방식으로 지정되면 resources를 통해 RESTful API가 만들어지며, devise는 devise for를 통해 생성한다.
+        * nested route
+            - resources 안에 또다시 resources를 넣을 수 있다.(<a href="https://github.com/hongjw1991/watcha_app">참조</a>)
     - config/initializers : 서버 동작시 처음에 다 읽어들인다.
     - db/ : ORM이용해 db 설정
         - seeds.rb : 다른 db 혹은 csv파일의 내용을 바로 로컬 db에 넣을 수 있다.
@@ -875,6 +878,8 @@ end
     - find : 자식 요소들 중에서 선택자로 준 것을 찾아 반환
     - parent : 부모 요소를 반환
     - `$(document).on('ready', function() {})` : document의 load가 끝나면 스크립트를 실행한다는 규정. 
+    - append : html elements를 마지막에 추가
+    - prepend : html elements를 beginning 부분에 추가
 * JS함수
     - innerHTML과 innerText의 차이 : HTML은 span이 있으면 그걸 통째로 뺴오고 Text는 Text만 빼옴. 그리고 인코딩의 차이가 있음.
     - location.href, location.replace : 특정 url로 이동시킬 수 있다.
