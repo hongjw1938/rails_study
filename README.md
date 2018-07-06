@@ -179,6 +179,12 @@ end
     1. `"key" => "value"`
     2. `:key => "value"`
     3. `key: "value"`
+* respond_to do |format| 형식(<a href="https://github.com/hongjw1991/watcha_app">사용참조<a/>)
+    - 원하는 js 파일로 응답시킬 수 있다.(기존에는 action명에 일치하는 파일로 알아서 찾아가도록 했다.)
+    - 그러나 이를 사용시에 분기를 사용하여 서로 다른 js파일로 render시킬 수가 있다.
+    - format.html과 format.json
+        > 일반적인 요청시 html로 보내고, json으로 요청시 json으로 보낸다.
+
 ### 3. MVC
 - ![이미지](./readme_img/mvc.JPG)
 * Controller
@@ -968,3 +974,7 @@ end
                 > 현재 유저가 현재 보고 있는 이 영화가 좋다고 하는 요청
             
             - 서버는 응답이 오면 좋아요 버튼의 텍스트를 좋아요 취소로 바꾸고, `btn-info` -> `btn-warning text-white`로 변경한다.
+### 14. Kaminari(pagination)
+    - <a href="https://github.com/kaminari/kaminari">참조</a>
+    - pagination을 가능하도록 만들어주는 gem
+    - <a href="https://github.com/hongjw1991/watcha_app">사용참조</a>
