@@ -69,6 +69,11 @@ end
     - Productionr
         - 변경사항이 자동적으로 저장되지 않음. 로그도 일부만 찍힌다.(낮은 level). `$ rails s`로 서버를 실행하지 않는다.
 * gems
+    * toastr_rails
+        - js파일을 이용한 flash를 사용할 수 있다.
+        - <a href="https://medium.com/@shilpikayal/toastr-js-with-rails-5-b7677bd56b52">참조</a>
+        - 위 참조 링크를 통해 js file에서 어떻게 implementation이 가능한지 알 수 있다.
+        - application.js 파일에서 수정가능
     * bootstrap
         - getbootstrap.com에서 bootstrap gem을 사용하기 위한 방법이 설명되어 있다.
             - `class`를 이용하여 css를 입힐 수 있음.
@@ -731,6 +736,25 @@ end
     - 뷰
         - _form : 댓글을 작성하기 위한 render form
 ### 12. 디바이스로 구현하기
+* 참조
+<a href="">깃허브 참조 사이트</a>
+* gem
+    - devise 설치
+        - `gem devise` -> `bundle install`
+    - `rails g devise:install` : initializers에 rb파일과 yml파일을 생성한다.
+        > generator로 devise 실행
+
+    - 이 때, 특정 setup을 반드시 진행해야 한다. command에 나온 것을 참조
+    - 현재는 개발환경에서 사용할 것이므로 development.rb에 추가한다.
+* controller
+    - `rails g controller home index` : *home controller*를 만들고 `index` action 생성
+    - root route를 `home#index` 로 변경한다.
+    - `rails g devise:controllers 컨트롤러 명 ` : 특정 controller에 대한 다양한 controller 파일을 만들어준다.
+* model
+    - `rails g devise:모델명`으로 생성(복수형으로 지정시 알아서 단수형으로 바꿔줌)
+    - *devise*는 기본적으로 email을 id로써 받는다.
+* route
+    - `devise_for :모델명` : 이를 통해 수많은 route가 생성됨
 ### 13. 카카오톡 챗봇 API
 * 참조
     - <a href="https://github.com/5chang2/kakao_bot_sample">사용방법</a>
