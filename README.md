@@ -943,9 +943,7 @@ end
                           $('.haha').text(Hangul.assemble(ch_array));
                         }
                       });
-                        
-                      
-                        
+
                     </script>
         </code></pre>
 * Ajax in rails
@@ -975,6 +973,6 @@ end
             
             - 서버는 응답이 오면 좋아요 버튼의 텍스트를 좋아요 취소로 바꾸고, `btn-info` -> `btn-warning text-white`로 변경한다.
 ### 14. Kaminari(pagination)
-    - <a href="https://github.com/kaminari/kaminari">참조</a>
-    - pagination을 가능하도록 만들어주는 gem
-    - <a href="https://github.com/hongjw1991/watcha_app">사용참조</a>
+- <a href="https://github.com/kaminari/kaminari">참조</a>
+- pagination을 가능하도록 만들어주는 gem
+- <a href="https://github.com/hongjw1991/watcha_app">사용참조</a>
