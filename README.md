@@ -51,10 +51,20 @@ end
     - test : rails의 프레임워크는 TDD(Test Driven Development)에 최적화되어 있음. 즉, test에 어떤 기능을 구현할지 명시할 수 있다.
     - tmp : 임시파일 저장
     - vendor : template 지정
+        - 보통 거의 변하지 않는 파일들을 지정한다.(/asset의 아래에는 자주 변하는 파일 관리)
     - Gemfile : gem관리
         - `gem 'gem이름', '~> version'`과 같이 입력한다.
         - `group :development do` 여기에 사용하는 경우 실행시에만 작동하는 gem file을 줄 수 있다.
     - Gemfile.lock : 설치된 dependencies 확인
+    - rails code
+        - rails c : command를 작동
+        - rails routes : route 설정한 것을 모두 보여준다.
+        - rails db:migrate : db를 migrate
+        - rails db:seed : db를 seed.rb파일에 있는 것으로 migrate
+        - rails db:reset : db의 data를 지움
+        - rails db:drop : db를 지운다.
+        - rails assets:precompile : assets의 css, js를 compile한다. 만약 compile되었으면 public 아래에 compile되어 assets가 나타난다.
+        - rails assets:clobber : precompile된 assets를 지운다.
 * rails client - server 요청 관계
     - 하단 이미지 확인
         - Routes는 config/routes.rb
@@ -1000,3 +1010,15 @@ end
 - <a href="https://github.com/kaminari/kaminari">참조</a>
 - pagination을 가능하도록 만들어주는 gem
 - <a href="https://github.com/hongjw1991/watcha_app">사용참조</a>
+### 15. template사용하기
+* <a href="https://github.com/hongjw1991/fuzen_template">참조</a>
+* 기본 template적용 외의 다른 페이지
+    - products_detail
+        -  `rails g scaffold products` : 우선 scaffold를 생성한다.
+        -  기존에 render 시키던 nav, sidebar등을 제외한 부분을 필요한 view에 넣어놓는다.
+        -  scss 파일
+            - 기존에 사용했던 css파일을 그대로 import시킨다. 만약 추가로 사용하는 것이 있다면 그 또한 파일을 이동시키고 import
+            - initializer/assets.rb에 precompile에 추가해줘야 해당 내용도 compile된다.
+        - js 파일
+            - coffee는 js로 바꾸고 사용하는 js 파일을 모두 compile시키도록 //= require로 추가한다.
+            - 직접 페이지에 코딩된 script는 페이지에 추가한다.
