@@ -1022,3 +1022,5 @@ end
         - js 파일
             - coffee는 js로 바꾸고 사용하는 js 파일을 모두 compile시키도록 //= require로 추가한다.
             - 직접 페이지에 코딩된 script는 페이지에 추가한다.
+### 16. Live Chatting 구현
+* <a href="https://github.com/hongjw1991/chat_app">참조</a>
