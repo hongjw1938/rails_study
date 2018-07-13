@@ -761,7 +761,7 @@ end
     - root route를 `home#index` 로 변경한다.
     - `rails g devise:controllers 컨트롤러 명 ` : 특정 controller에 대한 다양한 controller 파일을 만들어준다.
 * model
-    - `rails g devise:모델명`으로 생성(복수형으로 지정시 알아서 단수형으로 바꿔줌)
+    - `rails g devise 모델명`으로 생성(복수형으로 지정시 알아서 단수형으로 바꿔줌)
     - *devise*는 기본적으로 email을 id로써 받는다.
 * route
     - `devise_for :모델명` : 이를 통해 수많은 route가 생성됨
@@ -1051,3 +1051,5 @@ end
     - 외의의 다른 추가적인 이벤트 등도 모두 sample을 참조하면 됨.
 ### 18. summernote 사용하기(wysiwyg) 및 관리자 페이지 만들기
 * <a href="https://github.com/hongjw1991/watcha_app">참조</a>
+### 19. Social login 구현
+* <a href="">참조</a>
