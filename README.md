@@ -297,6 +297,12 @@ end
         - Client에게 보여줄 Front page
     - 규칙
         - 액션과 뷰 파일의 이름은 반드시 일치시켜야 한다.
+    - layout
+        - 특정 controller, action마다 다른 layout을 적용시킬 수 있다.
+        - <a href="http://guides.rubyonrails.org/layouts_and_rendering.html">참조</a>
+        - `layout "layout_name"`으로 controller에 작성하면 해당 컨트롤러는 해당 layout만 적용된다.
+        - 해당 layout을 적용시킬 때는 view에서 layout부분에 render시킬 내용만 추가하여 파일을 새로 만들면 해당 이름이 layout이름이 된다.
+        - 특정 action에만 적용시키고 싶은 경우 only, except를 사용해 symbol로 action을 명시한다.
 ### 4. 유저등록 및 유저정보 가져오기
 * 진행
     - user controller생성 : `rails g controller user`
