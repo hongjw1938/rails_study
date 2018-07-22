@@ -199,7 +199,15 @@ end
     - 그러나 이를 사용시에 분기를 사용하여 서로 다른 js파일로 render시킬 수가 있다.
     - format.html과 format.json
         > 일반적인 요청시 html로 보내고, json으로 요청시 json으로 보낸다.
-
+* 다양한 오류
+    - undefined method for nil class
+        - 사용하려는 객체가 nil일 때 해당 객체에서 특정 메소드를 사용하려하면 발생
+        - 해결 : 사용하려는 객체를 리턴하는 함수에서 마지막 문장에 해당 객체를 기술하는 지 확인하거나, 해당 객체에 확실히 값이 들어가는지 puts로 확인
+    - unknown format
+        - respond_to do를 사용시에 format에 요청 방식을 충분히 기술하지 않은 경우 발생하는 듯.
+        - 웬만하면 json방식은 기본으로 추가해둘 것.
+    - no route match
+        - view 부분이나 route부분, controller에서 routing이 확실히 되어있지 않은 경우 발생
 ### 3. MVC
 - ![이미지](./readme_img/mvc.JPG)
 * Controller
