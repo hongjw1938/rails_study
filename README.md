@@ -149,16 +149,16 @@ end
         - 객체 일치여부
             - `eql?`
 * rails method
-    > class method
+    > instance method
         > 사용 방법 : <pre><code>def 메소드명(매개변수)
                                         로직안에서 self 쓸수 없음   
-        >                        end</code></pre>
+                                end</code></pre>
 
-    > instance method
+    > class method
         > 사용 방법 : <pre><code>def self.메소드명(매개변수)
                                         로직안에서 self를 쓸 수 있음
                                         self==현재 자신 객체
-        >                        end</code></pre>
+                                end</code></pre>
         
     - cf) 아래의 !, ?와 같은 경우는 필수는 아니고, 명시적인 표시를 할 때 사용한다.
         - 특정 메소드의 경우에는 작동은 같으나 결과가 다를 수 있다!(ex- gsub)
